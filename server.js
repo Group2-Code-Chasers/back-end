@@ -1,11 +1,17 @@
+
 "use strict";
+
+
 
 const express = require('express');
 const server = express();
 const PORT =process.env.PORT ||3003;
 const cors = require('cors');
 const axios = require('axios')
+
 const APIKey=process.env.APIKey;
+
+
 require('dotenv').config();
 server.use(cors())
 server.use(express.json())
@@ -15,7 +21,7 @@ const pg = require('pg');
 const client = new pg.Client ((process.env.DATABASE_URL||`${DATABASE_URL}`)) 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+
 //routes//
 server.get('/', homeHandler)
 server.get('/choosequiz', chooseQuiz)
@@ -23,7 +29,7 @@ server.get('/getAllCategories', getAllCategories)
 server.get("/leaderboard", getGrades);
 server.post("/grades", addGrade);
 
-///////////////////////////////////////////////////////////////////////////////////////////////
+
 
 server.get("*", (req, res) => {
     res.status(404).send("Sorry, page not found");
@@ -40,6 +46,12 @@ server.get("*", (req, res) => {
   server.use(errorHandler);
 
 
+
+
+
+server.get('/', homeHandler)
+server.get('/choosequiz', chooseQuiz)
+server.get('/getAllCategories', getAllCategories)
 
 
 function chooseQuiz(req, res) {
@@ -67,6 +79,12 @@ function homeHandler(req, res) {
 
 
 
+server.listen(PORT, () => {
+    console.log(`Listening on ${PORT}: I'm ready`)
+})
+     
+
+
 
 
 
@@ -75,11 +93,14 @@ function getAllCategories(req, res) {
     axios.get(API_URL)
         .then((response) => {
             res.status(200).send(response.data)
+
             console.log(response.data)
+
         })
         .catch(error => {
             res.send(error)
         })
+
 }
 
 
@@ -142,4 +163,7 @@ function getGrades(req,res) {
 
 
 
+
+
+}
 
