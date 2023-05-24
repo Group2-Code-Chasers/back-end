@@ -1,9 +1,11 @@
 "use strict";
+
 const express = require('express');
 const server = express();
 const PORT =process.env.PORT ||3003;
 const cors = require('cors');
 const axios = require('axios')
+const APIKey=process.env.APIKey;
 require('dotenv').config();
 server.use(cors())
 server.use(express.json())
@@ -73,6 +75,7 @@ function getAllCategories(req, res) {
     axios.get(API_URL)
         .then((response) => {
             res.status(200).send(response.data)
+            console.log(response.data)
         })
         .catch(error => {
             res.send(error)
@@ -130,10 +133,6 @@ function getGrades(req,res) {
     res.status(500).send(err);
   }
   
-
-  server.listen(PORT, () => {
-    console.log(`Listening on ${PORT}: I'm ready`)
-})
      
 
 
