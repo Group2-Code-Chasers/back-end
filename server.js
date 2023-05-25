@@ -60,15 +60,20 @@ function getAllCategories(req, res) {
 
 
 function chooseQuiz(req, res) {
-  const quizCategory = req.query.category;
+  // const quizCategory = req.query.category;
   const difficulty = req.query.difficulty;
-  const limit = req.query.limit
+  const amount = req.query.amount
+  const categoryId = req.query.categoryId;
   console.log(req.query.category)
-  const API_URL = `https://quizapi.io/api/v1/questions?apiKey=${APIKey}&category=${quizCategory}&difficulty=${difficulty}&limit=${limit}`;
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}`;
+
 
   axios.get(API_URL)
     .then((response) => {
-      res.send(response.data.products)
+      res.send(response.data.results)
+  
+        console.log(response.data);
+      
     })
     .catch(error => {
       res.send(error)
