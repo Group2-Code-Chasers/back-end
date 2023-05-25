@@ -5,11 +5,11 @@
 
 const express = require('express');
 const server = express();
-const PORT = process.env.PORT || 3003;
+const PORT = 3000;
 const cors = require('cors');
 const axios = require('axios')
 
-const APIKey = process.env.APIKey ;
+const APIKey = "6cy3aAAxKRS42r8DdIJrHyIGaLvrRz1AsZKstf2q";
 
 
 require('dotenv').config();
@@ -18,56 +18,19 @@ server.use(express.json())
 
 
 const pg = require('pg');
-const client = new pg.Client((process.env.DATABASE_URL || `${DATABASE_URL}`))
+const client = new pg.Client('postgresql://localhost:5432/quiz')
 
 
 
 //routes//
-server.get('/', homeHandler)
-server.get('/choosequiz', chooseQuiz)
-server.get('/getAllCategories', getAllCategories)
+server.get('/', homeHandler);
+server.get('/getAllCategories', getAllCategories);
+server.get('/choosequiz', chooseQuiz);
+server.get('/getQusetions/:categoryId', getQuestions);
 server.get("/leaderboard", getGrades);
 server.post("/grades", addGrade);
-
-
-
-server.get("*", (req, res) => {
-  res.status(404).send("Sorry, page not found");
-});
-
-server.get("*", (req, res) => {
-  res.status(500).send({
-    status: 500,
-    responseText: "Sorry, something went wrong",
-  });
-});
-
-
+server.get('*', defaultHandler);
 server.use(errorHandler);
-
-
-
-
-
-server.get('/', homeHandler)
-server.get('/choosequiz', chooseQuiz)
-server.get('/getAllCategories', getAllCategories)
-
-
-function chooseQuiz(req, res) {
-  const quizCategory = req.query.category;
-  const difficulty = req.query.difficulty;
-  const limit = req.query.limit
-  console.log(req.query.category)
-  const API_URL = `https://quizapi.io/api/v1/questions?apiKey=${APIKey}&category=${quizCategory}&difficulty=${difficulty}&limit=${limit}`;
-  axios.get(API_URL)
-    .then((response) => {
-      res.send(response.data.products)
-    })
-    .catch(error => {
-      res.send(error)
-    })
-}
 
 
 
@@ -76,33 +39,61 @@ function homeHandler(req, res) {
   res.status(200).send("Hello from the My quiz App")
 }
 
-
-
-
-server.listen(PORT, () => {
-  console.log(`Listening on ${PORT}: I'm ready`)
-})
-
-
-
-
-
+function defaultHandler(req, res) {
+  res.status(404).send('default route')
+}
 
 function getAllCategories(req, res) {
-  const API_URL = `https://quizapi.io/api/v1/questions?apiKey=${APIKey}`;
+  const API_URL = `https://opentdb.com/api_category.php`;
   axios.get(API_URL)
     .then((response) => {
-      res.status(200).send(response.data)
+      res.status(200).send(response.data.trivia_categories)
 
       console.log(response.data)
 
     })
-    .catch(error => {
-      res.send(error)
+    .catch((error) => {
+      errorHandler(error, req, res)
     })
 
 }
 
+
+function chooseQuiz(req, res) {
+  // const quizCategory = req.query.category;
+  const difficulty = req.query.difficulty;
+  const amount = req.query.amount
+  const categoryId = req.query.categoryId;
+  console.log(req.query.category)
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}`;
+
+
+  axios.get(API_URL)
+    .then((response) => {
+      res.send(response.data.results)
+  
+        console.log(response.data);
+      
+    })
+    .catch(error => {
+      res.send(error)
+    })
+}
+
+
+function getQuestions(req, res) {
+  const categoryId = req.params.categoryId;
+  const url = `https://opentdb.com/api.php?amount=10&category=${categoryId}`;
+
+  axios.get(url)
+    .then(response => {
+      const questions = response.data.results;
+      res.send({ questions: questions });
+    })
+    .catch((error) => {
+      errorHandler(error, req, res)
+    })
+}
 
 
 
@@ -132,7 +123,6 @@ function addGrade(req, res) {
       errorHandler(error, req, res);
     });
 }
-
 
 
 
