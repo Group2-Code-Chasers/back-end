@@ -91,8 +91,8 @@ function getAllCategories(req, res) {
       console.log(response.data)
 
     })
-    .catch(error => {
-      res.send(error)
+    .catch((error) => {
+      errorHandler(error, req, res)
     })
 
 }
@@ -108,10 +108,9 @@ function getQuestions(req, res) {
       const questions = response.data.results;
       res.send({ questions: questions });
     })
-    .catch(error => {
-      console.error('Error fetching trivia questions:', error.message);
-      res.status(500).send({ error: 'Error fetching trivia questions' });
-    });
+    .catch((error) => {
+      errorHandler(error, req, res)
+    })
 }
 
 
