@@ -26,6 +26,7 @@ const client = new pg.Client('postgresql://localhost:5432/quiz')
 server.get('/', homeHandler)
 server.get('/choosequiz', chooseQuiz)
 server.get('/getAllCategories', getAllCategories)
+server.get('/getQusetions/:categoryId', getQuestions);
 server.get("/leaderboard", getGrades);
 server.post("/grades", addGrade);
 
@@ -90,26 +91,31 @@ function getAllCategories(req, res) {
       console.log(response.data)
 
     })
-    .catch(error => {
-      res.send(error)
+    .catch((error) => {
+      errorHandler(error, req, res)
     })
 
 }
 
-// function getAllCategories(req, res) {
-//   const API_URL = `https://the-trivia-api.com/v2/categories`;
-//   axios.get(API_URL)
-//     .then((response) => {
-//       res.status(200).send(response.data)
 
-//       console.log(response.data)
 
-//     })
-//     .catch(error => {
-//       res.send(error)
-//     })
+function getQuestions(req, res) {
+  const categoryId = req.params.categoryId;
+  const url = `https://opentdb.com/api.php?amount=10&category=${categoryId}`;
 
-// }
+  axios.get(url)
+    .then(response => {
+      const questions = response.data.results;
+      res.send({ questions: questions });
+    })
+    .catch((error) => {
+      errorHandler(error, req, res)
+    })
+}
+
+
+
+
 
 
 function getGrades(req, res) {
