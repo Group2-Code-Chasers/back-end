@@ -5,11 +5,11 @@
 
 const express = require('express');
 const server = express();
-const PORT = process.env.PORT || 3003;
+const PORT =  3000;
 const cors = require('cors');
 const axios = require('axios')
 
-const APIKey = process.env.APIKey ;
+const APIKey = "6cy3aAAxKRS42r8DdIJrHyIGaLvrRz1AsZKstf2q" ;
 
 
 require('dotenv').config();
@@ -18,7 +18,7 @@ server.use(express.json())
 
 
 const pg = require('pg');
-const client = new pg.Client((process.env.DATABASE_URL || `${DATABASE_URL}`))
+const client = new pg.Client('postgresql://localhost:5432/quiz')
 
 
 
@@ -60,6 +60,7 @@ function chooseQuiz(req, res) {
   const limit = req.query.limit
   console.log(req.query.category)
   const API_URL = `https://quizapi.io/api/v1/questions?apiKey=${APIKey}&category=${quizCategory}&difficulty=${difficulty}&limit=${limit}`;
+ 
   axios.get(API_URL)
     .then((response) => {
       res.send(response.data.products)
@@ -79,20 +80,12 @@ function homeHandler(req, res) {
 
 
 
-server.listen(PORT, () => {
-  console.log(`Listening on ${PORT}: I'm ready`)
-})
-
-
-
-
-
 
 function getAllCategories(req, res) {
-  const API_URL = `https://quizapi.io/api/v1/questions?apiKey=${APIKey}`;
+  const API_URL = `https://opentdb.com/api_category.php`;
   axios.get(API_URL)
     .then((response) => {
-      res.status(200).send(response.data)
+      res.status(200).send(response.data.trivia_categories)
 
       console.log(response.data)
 
@@ -103,7 +96,20 @@ function getAllCategories(req, res) {
 
 }
 
+// function getAllCategories(req, res) {
+//   const API_URL = `https://the-trivia-api.com/v2/categories`;
+//   axios.get(API_URL)
+//     .then((response) => {
+//       res.status(200).send(response.data)
 
+//       console.log(response.data)
+
+//     })
+//     .catch(error => {
+//       res.send(error)
+//     })
+
+// }
 
 
 function getGrades(req, res) {
