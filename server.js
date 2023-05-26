@@ -65,7 +65,7 @@ function chooseQuiz(req, res) {
   const amount = req.query.amount
   const categoryId = req.query.categoryId;
   console.log(req.query.category)
-  const API_URL = `https://opentdb.com/api.php?amount=${amount}&categoryId=${categoryId}&difficulty=${difficulty}`;
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}`;
 
 
   axios.get(API_URL)
