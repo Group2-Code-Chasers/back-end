@@ -5,7 +5,7 @@
 
 const express = require('express');
 const server = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3003;
 const cors = require('cors');
 const axios = require('axios')
 
@@ -65,7 +65,7 @@ function chooseQuiz(req, res) {
   const amount = req.query.amount
   const categoryId = req.query.categoryId;
   console.log(req.query.category)
-  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}`;
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&categoryId=${categoryId}&difficulty=${difficulty}`;
 
 
   axios.get(API_URL)
