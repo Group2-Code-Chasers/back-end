@@ -27,7 +27,7 @@ server.get('/', homeHandler);
 server.get('/getAllCategories', getAllCategories);
 server.get('/choosequiz', chooseQuiz);
 server.get('/getQusetions/:categoryId', getQuestions);
-server.get("/leaderboard", getGrades);
+server.get("/flipping", getFlipping);
 server.post("/saveQuiz", saveQuiz);
 server.get('/getQuizResult',quizResultHandeler)
 server.get('*', defaultHandler);
@@ -61,7 +61,6 @@ function getAllCategories(req, res) {
 
 
 function chooseQuiz(req, res) {
-  // const quizCategory = req.query.category;
   const difficulty = req.query.difficulty;
   const amount = req.query.amount
   const categoryId = req.query.categoryId;
@@ -98,14 +97,23 @@ function getQuestions(req, res) {
 
 
 
-function getGrades(req, res) {
+function getFlipping(req, res) {
+  const { amount, category } = req.query;
 
-  const sql = `SELECT * FROM Grades;`;
-  client.query(sql).then((data) => {
-    res.send(data.rows)
-  }).catch((error) => {
-    errorHandler(error, req, res)
-  })
+  console.log(req.query.category)
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${category}`;
+
+
+  axios.get(API_URL)
+    .then((response) => {
+      res.send(response.data.results)
+  
+        console.log(response.data);
+      
+    })
+    .catch(error => {
+      res.send(error)
+    })
 }
 
 
