@@ -28,7 +28,7 @@ server.get('/getAllCategories', getAllCategories);
 server.get('/choosequiz', chooseQuiz);
 server.get('/getQusetions/:categoryId', getQuestions);
 server.get("/leaderboard", getGrades);
-server.post("/grades", addGrade);
+server.post("/saveQuiz", saveQuiz);
 server.get('*', defaultHandler);
 server.use(errorHandler);
 
@@ -65,7 +65,7 @@ function chooseQuiz(req, res) {
   const amount = req.query.amount
   const categoryId = req.query.categoryId;
   console.log(req.query.category)
-  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}`;
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}&type=multiple`;
 
 
   axios.get(API_URL)
@@ -108,11 +108,11 @@ function getGrades(req, res) {
 }
 
 
-function addGrade(req, res) {
-  const { name, score, total_qes, correct_answers } = req.body;
+function saveQuiz(req, res) {
+  const { name, numQuestions,  numCorrectAnswers, numUnanswered, score } = req.body;
   const sql =
-    'INSERT INTO Grades (name, score, total_qes, correct_answers) VALUES ($1, $2, $3, $4)';
-  const values = [name, score, total_qes, correct_answers];
+    'INSERT INTO Grades (name, numQuestions, numCorrectAnswers, numUnanswered, score) VALUES ($1, $2, $3, $4, $5)';
+  const values = [name, numQuestions, numCorrectAnswers, numUnanswered, score];
 
   client
     .query(sql, values)
