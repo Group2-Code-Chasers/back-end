@@ -29,6 +29,7 @@ server.get('/choosequiz', chooseQuiz);
 server.get('/getQusetions/:categoryId', getQuestions);
 server.get("/leaderboard", getGrades);
 server.post("/saveQuiz", saveQuiz);
+server.get('/getQuizResult',quizResultHandeler)
 server.get('*', defaultHandler);
 server.use(errorHandler);
 
@@ -124,7 +125,17 @@ function saveQuiz(req, res) {
     });
 }
 
-
+function quizResultHandeler(req,res)
+{
+  const sql=`SELECT * FROM grades ORDER BY id DESC LIMIT 1;`
+  client.query(sql)
+  .then((data)=>{
+    res.send(data.rows)
+  })
+  .catch((error)=>{
+    errorHandler(error,req,res)
+  })
+}
 
 function errorHandler(error, req, res) {
   const err = {
