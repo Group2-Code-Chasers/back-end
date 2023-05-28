@@ -1,7 +1,10 @@
-CREATE TABLE Grades (
+DROP TABLE IF EXISTS grades;
+
+CREATE TABLE IF NOT EXISTS grades (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
-    score DECIMAL,
-    total_qes INT,
-    correct_answers INT
+    numQuestions INT,
+    numCorrectAnswers INT,
+    numUnanswered INT,
+    score DECIMAL
 );
