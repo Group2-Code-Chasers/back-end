@@ -101,7 +101,7 @@ function getFlipping(req, res) {
   const { amount, category } = req.query;
 
   console.log(req.query.category)
-  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${category}`;
+  const API_URL = `https://opentdb.com/api.php?amount=${amount}&category=${category}&type=boolean`;
 
 
   axios.get(API_URL)
