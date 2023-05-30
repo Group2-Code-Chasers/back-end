@@ -1,6 +1,4 @@
-
 "use strict";
-
 
 
 const express = require('express');
@@ -9,7 +7,6 @@ const PORT = process.env.PORT || 3003;
 const cors = require('cors');
 const axios = require('axios')
 
-const APIKey = "6cy3aAAxKRS42r8DdIJrHyIGaLvrRz1AsZKstf2q";
 
 
 require('dotenv').config();
@@ -18,7 +15,7 @@ server.use(express.json())
 
 
 const pg = require('pg');
-const client = new pg.Client('postgresql://localhost:5432/quiz')
+const client = new pg.Client(process.env.DATABASE_URL)
 
 
 
